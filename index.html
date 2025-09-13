@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для моей любимой мышаньки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            z-index: 2;
+        }
+        
+        h1 {
+            color: #d3567e;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: pulse 2s infinite;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .heart-button {
+            background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            font-size: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .heart-button::before {
+            content: '❤️';
+            font-size: 2rem;
+            transition: all 0.5s ease;
+        }
+        
+        .heart-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .heart-button.active {
+            width: 300px;
+            height: 80px;
+            border-radius: 40px;
+            font-size: 1rem;
+            animation: heartBeat 0.8s ease;
+        }
+        
+        .heart-button.active::before {
+            opacity: 0;
+            font-size: 0;
+        }
+        
+        .heart-button.active::after {
+            content: attr(data-text);
+            position: absolute;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 0 15px;
+            text-align: center;
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+
+        /* Анимации мышек и сердечек */
+        .floating {
+            position: absolute;
+            z-index: 1;
+            user-select: none;
+            pointer-events: none;
+            animation-timing-function: linear;
+            font-size: 30px;
+        }
+        
+        .mouse::after {
+            content: '🐭';
+        }
+        
+        .heart-emoji::after {
+            content: '❤️';
+            color: #ff6b8b;
+        }
+        
+        @keyframes floatHorizontal {
+            0% {
+                transform: translateX(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(calc(100vw + 100px)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes floatVertical {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+            
+            .buttons-container {
+                gap: 15px;
+            }
+            
+            .heart-button {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .heart-button.active {
+                width: 280px;
+                height: 70px;
+            }
+            
+            .heart-button.active::after {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Для моей любимой мышаньки</h1>
+        
+        <div class="buttons-container">
+            <button class="heart-button" data-text="Любимая моя мышанька, доброе утро!"></button>
+            <button class="heart-button" data-text="Ты — моё самое большое счастье"></button>
+            <button class="heart-button" data-text="Как тебе удаётся быть такой умной и красивой мышанькой?"></button>
+            <button class="heart-button" data-text="И очень сексуальной :)"></button>
+            <button class="heart-button" data-text="Люблю тебя"></button>
+        </div>
+    </div>
+    
+    <div id="floatingElements"></div>
+
+    <script>
+        // Обработчики для кнопок-сердечек
+        document.querySelectorAll('.heart-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Сбрасываем все кнопки
+                document.querySelectorAll('.heart-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Активируем текущую кнопку
+                this.classList.add('active');
+                
+                // Добавляем дополнительных мышек и сердечек при клике
+                createFloatingElements(2, 'mouse');
+                createFloatingElements(3, 'heart-emoji');
+            });
+        });
+        
+        // Создаем плавающие элементы (мышки и сердечки)
+        function createFloatingElements(count, type) {
+            const container = document.getElementById('floatingElements');
+            
+            for (let i = 0; i < count; i++) {
+                const element = document.createElement('div');
+                element.classList.add('floating', type);
+                
+                // Случайная позиция
+                const top = Math.random() * 100;
+                element.style.top = top + '%';
+                
+                // Случайная скорость (5-15 секунд)
+                const duration = Math.random() * 10 + 5;
+                
+                // Случайное направление
+                const isHorizontal = Math.random() > 0.5;
+                
+                if (isHorizontal) {
+                    const isReverse = Math.random() > 0.5;
+                    if (isReverse) {
+                        element.style.right = '0';
+                        element.style.animation = `floatHorizontal ${duration}s linear`;
+                    } else {
+                        element.style.left = '0';
+                        element.style.animation = `floatHorizontal ${duration}s linear`;
+                    }
+                } else {
+                    const isReverse = Math.random() > 0.5;
+                    if (isReverse) {
+                        element.style.bottom = '0';
+                        element.style.animation = `floatVertical ${duration}s linear`;
+                    } else {
+                        element.style.top = '0';
+                        element.style.animation = `floatVertical ${duration}s linear`;
+                    }
+                }
+                
+                // Случайная задержка
+                element.style.animationDelay = Math.random() * 2 + 's';
+                
+                container.appendChild(element);
+                
+                // Удаляем элемент после завершения анимации
+                setTimeout(() => {
+                    if (element.parentNode) {
+                        element.parentNode.removeChild(element);
+                    }
+                }, duration * 1000 + 2000);
+            }
+        }
+        
+        // Инициализация при загрузке страницы
+        window.onload = function() {
+            // Создаем начальных мышек и сердечек
+            createFloatingElements(5, 'mouse');
+            createFloatingElements(7, 'heart-emoji');
+            
+            // Постоянно создаем новых мышек и сердечек
+            setInterval(() => {
+                createFloatingElements(1, 'mouse');
+                createFloatingElements(2, 'heart-emoji');
+            }, 3000);
+        };
+    </script>
+</body>
+</html>
