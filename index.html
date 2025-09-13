@@ -291,5 +291,138 @@
             }, 3000);
         };
     </script>
+    <!-- Добавьте этот код перед закрывающим тегом </body> -->
+
+<style>
+/* Стили для летающих фотографий в сердечках */
+.heart-photo {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    z-index: 1;
+    animation-timing-function: ease-in-out;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(255, 107, 139, 0.7);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.heart-photo::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ff6b8b;
+    border-radius: 50%;
+    transform: rotate(-45deg);
+}
+
+.heart-photo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 100%;
+    height: 100%;
+    background: #ff6b8b;
+    border-radius: 50%;
+    transform: rotate(-45deg);
+}
+
+.heart-photo img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    z-index: 2;
+    border-radius: 50%;
+}
+
+@keyframes floatHeartPhoto {
+    0% {
+        transform: translateY(100vh) rotate(45deg) scale(0.5);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(calc(45deg + 360deg)) scale(1);
+        opacity: 0;
+    }
+}
+</style>
+
+<script>
+// Функция для создания летающих фотографий в сердечках
+function createFloatingHeartPhoto() {
+    const container = document.getElementById('floatingElements');
+    const heart = document.createElement('div');
+    heart.classList.add('heart-photo');
+    
+    // Создаем изображение внутри сердечка
+    const img = document.createElement('img');
+    img.src = 'https://ltdfoto.ru/images/2024/01/23/vR7VQ7.md.jpg'; // Ваша ссылка на фото
+    img.alt = "Наше фото";
+    img.onerror = function() {
+        // Если фото не загрузится, покажем сердечко без фото
+        heart.style.background = '#ff6b8b';
+    };
+    
+    heart.appendChild(img);
+    
+    // Случайная позиция по горизонтали
+    const left = Math.random() * 90 + 5;
+    heart.style.left = left + '%';
+    
+    // Случайная скорость (10-20 секунд)
+    const duration = Math.random() * 10 + 10;
+    
+    // Случайный размер
+    const size = Math.random() * 30 + 70;
+    heart.style.width = size + 'px';
+    heart.style.height = size + 'px';
+    
+    // Анимация
+    heart.style.animation = `floatHeartPhoto ${duration}s ease-in-out`;
+    
+    // Случайная задержка
+    heart.style.animationDelay = Math.random() * 5 + 's';
+    
+    container.appendChild(heart);
+    
+    // Удаляем элемент после завершения анимации
+    setTimeout(() => {
+        if (heart.parentNode) {
+            heart.parentNode.removeChild(heart);
+        }
+    }, duration * 1000 + 5000);
+}
+
+// Инициализация летающих фото
+function initFloatingPhotos() {
+    // Создаем несколько фото сразу при загрузке
+    for (let i = 0; i < 2; i++) {
+        setTimeout(() => createFloatingHeartPhoto(), i * 1000);
+    }
+    
+    // Создаем новые фото каждые 15 секунд
+    setInterval(() => {
+        createFloatingHeartPhoto();
+    }, 15000);
+}
+
+// Запускаем после полной загрузки страницы
+window.addEventListener('load', initFloatingPhotos);
+</script>
 </body>
 </html>
